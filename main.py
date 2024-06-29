@@ -1,3 +1,5 @@
+__import__('pysqlite3')
+import sys
 import os
 import xml.etree.ElementTree as et
 from ftplib import FTP
@@ -158,11 +160,10 @@ def main():
             texts = extract_texts2(filename=filename, storage_loc=text_loc)
             print("Found", len(texts), "items")
             filelist = [{"filename": filename}]
-            filelist = filelist * len(texts)
             for k, v in texts.items():
                 try:
                     print("Trying upsert", k)
-                    collection.upsert(documents=list(v), ids=list(k), metadatas=filelist)
+                    collection.upsert(documents=[v], ids=[k], metadatas=filelist)
                     # collection.add(documents=[v], ids=[k], metadatas=[{"filename": filename}])
                 except Exception as e:
                     print(e)
@@ -170,6 +171,7 @@ def main():
 
 
 if __name__ == '__main__':
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
     pattern = "pubmed24n0001.xml.gz"
     main()
 
