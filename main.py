@@ -154,16 +154,19 @@ def main():
     for filename in os.listdir(text_loc):
         f = os.path.join(text_loc, filename)
         if os.path.isfile(f) and filename.endswith(".gz"):
+            print("Extracting:", filename)
             texts = extract_texts2(filename=filename, storage_loc=text_loc)
+            print("Found", len(texts), "items")
             filelist = [{"filename": filename}]
             filelist = filelist * len(texts)
             for k, v in texts.items():
                 try:
+                    print("Trying upsert", k)
                     collection.upsert(documents=list(v), ids=list(k), metadatas=filelist)
                     # collection.add(documents=[v], ids=[k], metadatas=[{"filename": filename}])
                 except Exception as e:
                     print(e)
-                    pass
+                    # pass
 
 
 if __name__ == '__main__':
