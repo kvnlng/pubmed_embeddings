@@ -17,11 +17,11 @@ def extract_texts2(filename: str, storage_loc: str) -> dict:
     try:
         with tarfile.open(name=storage_loc + "/" + filename, mode="r:gz") as tar:
             for member in tar.getmembers():
-                print(member.name)
+                # print(member.name)
                 f = tar.extractfile(member)
                 if f is not None:
                     content = f.read()
-                    print(len(content))
+                    # print(len(content))
                     try:
                         json_contents = json.loads(content)
 
@@ -162,16 +162,16 @@ def main():
             filelist = [{"filename": filename}]
             for k, v in texts.items():
                 try:
-                    print("Trying upsert", k)
-                    collection.upsert(documents=[v], ids=[k], metadatas=filelist)
+                    # print("Trying upsert", k)
+                    # collection.upsert(documents=[v], ids=[k], metadatas=filelist)
+                    collection.add(documents=[v], ids=[k], metadatas=filelist)
                     # collection.add(documents=[v], ids=[k], metadatas=[{"filename": filename}])
                 except Exception as e:
-                    print(e)
-                    # pass
+                    # print(e)
+                    pass
 
 
 if __name__ == '__main__':
     sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-    pattern = "pubmed24n0001.xml.gz"
     main()
 
